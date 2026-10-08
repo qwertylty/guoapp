@@ -1,12 +1,7 @@
-name: Build APK
-run-name: Build GuoApp ${{ inputs.build_flags }}
+name: Build app packages
+run-name: Build GuoApp True
 on:
   workflow_dispatch:
-    inputs:
-      build_flags:
-        description: 编译参数 --all-sources 代表真果鉴，留空=红果鉴
-        required: false
-        default: ''
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,15 +14,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
       - name: Build Android APK
-        run: |
-          if [ -z "${{ inputs.build_flags }}" ]; then
-            flutter build apk
-          else
-            flutter build apk --dart-define=BUILD_FLAGS=${{ inputs.build_flags }}
-          fi
+        run: flutter build apk --dart-define=BUILD_FLAGS=--all-sources
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-flutter build apk --dart-define=BUILD_FLAGS=--all-sources
